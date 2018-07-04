@@ -88,7 +88,7 @@ $.getJSON(user_license_file, function(data){
     "method": "subscribe",
     "params":{
       "_auth": "",
-      "streams": ['eeg','mot']
+      "streams": ['eeg', 'met', 'mot', 'dev', 'fac', 'com', 'pow', 'sys']
     },
     "id":1
   }
@@ -115,9 +115,8 @@ $.getJSON(user_license_file, function(data){
     // socket.send(JSON.stringify(auth_anonymous));
   };
 
-
   socket.onmessage = function(event){
-    
+
     let message = JSON.parse(event.data);
 
     if (message.hasOwnProperty('result'))
@@ -141,7 +140,6 @@ $.getJSON(user_license_file, function(data){
         console.log('sub md');
         sub.params._auth = resultObj['_auth'];
         socket.send(JSON.stringify(sub));
-
       }
     }
 
