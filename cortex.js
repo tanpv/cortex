@@ -1,5 +1,5 @@
-// let user_license_file = 'develop.json'
-let user_license_file = 'product.json'
+let user_license_file = 'develop.json'
+// let user_license_file = 'product.json'
 
 $.getJSON(user_license_file, function(data){
 
@@ -52,13 +52,43 @@ $.getJSON(user_license_file, function(data){
     "id":1
   }
 
-  let streams = ['eeg'];
+  auth_anonymous =  {
+    "jsonrpc": "2.0",
+    "method": "authorize",
+    "params": {},
+    "id": 1
+  }
+
+  // license info
+  license_info = {
+    "jsonrpc": "2.0",
+    "method": "getLicenseInfo",
+    "params": {
+      "_auth": ""
+    },
+    "id": 1
+  }
+
+  // create session
+  session = {
+    "jsonrpc": "2.0",
+    "method": "createSession",
+    "params":{
+      "_auth": "",
+      "status": "active"
+    },
+    "id":1
+  }
+
+
+  // let streams = ['eeg'];
+  // ['eeg','met','mot','dev','fac','com','pow', 'sys']
   sub = {
     "jsonrpc": "2.0",
     "method": "subscribe",
     "params":{
-      "_auth": auth,
-      "streams": streams
+      "_auth": "",
+      "streams": ['eeg','mot']
     },
     "id":1
   }
@@ -70,7 +100,7 @@ $.getJSON(user_license_file, function(data){
 
   socket.onopen = function(event){
     // send query headset
-    // socket.send(JSON.stringify(query_headset));
+    socket.send(JSON.stringify(query_headset));
 
     // logout
     // socket.send(JSON.stringify(logout));
@@ -80,22 +110,46 @@ $.getJSON(user_license_file, function(data){
     
     // auth
     socket.send(JSON.stringify(auth));
+
+    // // auth_anonymus
+    // socket.send(JSON.stringify(auth_anonymous));
   };
 
+
   socket.onmessage = function(event){
-    let message = JSON.parse(event.data);
     
-    if('_auth' in message.result){
-      console.log(message.result._auth);
+    let message = JSON.parse(event.data);
+
+    if (message.hasOwnProperty('result'))
+    {
+      resultObj = message['result'];
+      if (resultObj.hasOwnProperty('_auth'))
+      {
+        console.log(resultObj['_auth']);
+        
+        // get license info
+        console.log('license info');
+        license_info.params._auth = resultObj['_auth'];
+        socket.send(JSON.stringify(license_info));
+
+        // create session
+        console.log('create session');
+        session.params._auth = resultObj['_auth'];
+        socket.send(JSON.stringify(session));
+        
+        // sub data
+        console.log('sub md');
+        sub.params._auth = resultObj['_auth'];
+        socket.send(JSON.stringify(sub));
+
+      }
     }
 
-    // if (message.hasOwnProperty('_auth'))
-    // {
-    //   console.log(message['_auth']);
-    // }
+    // print log for every 1 second
+    setTimeout(function(){
+      console.log(Date.now());
+      console.log(message);
+    },1000);
+
   }
-
 });
-
-
-
