@@ -1,5 +1,5 @@
 let user_license_file = 'develop.json'
-// let user_license_file = 'product.json'
+//let user_license_file = 'product.json'
 
 $.getJSON(user_license_file, function(data){
 
@@ -103,10 +103,10 @@ $.getJSON(user_license_file, function(data){
     socket.send(JSON.stringify(query_headset));
 
     // logout
-    // socket.send(JSON.stringify(logout));
+    socket.send(JSON.stringify(logout));
   
     // login
-    // socket.send(JSON.stringify(login));
+    socket.send(JSON.stringify(login));
     
     // auth
     socket.send(JSON.stringify(auth));
@@ -144,10 +144,7 @@ $.getJSON(user_license_file, function(data){
     }
 
     // print log for every 1 second
-    setTimeout(function(){
-      console.log(Date.now());
-      console.log(message);
-    },1000);
+    console.log(message);
 
   }
 });
