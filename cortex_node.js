@@ -2,12 +2,39 @@
 let user_license_file = 'develop.json'
 //let user_license_file = 'product.json'
 
+// define logger
+const winston = require('winston');
+var fs = require('fs');
+const env = process.env.NODE_ENV || 'development';
+const logDir = 'log';
+
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
+const tsFormat = () => (new Date()).toLocaleTimeString();
+
+const logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({
+      timestamp: tsFormat,
+      colorize: true,
+      level: 'info'
+    }),
+    new (winston.transports.File)({
+      filename: `${logDir}/results.log`,
+      timestamp: tsFormat,
+      level: env === 'development' ? 'debug' : 'info'
+    })
+  ]
+});
+
 // define websocket
 const WebSocket = require('ws');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
 
 // define file utility
-var fs = require('fs');
+// var fs = require('fs');
 
 // read license file
 fs.readFile(user_license_file, 'utf8', function (err, data) {
@@ -154,7 +181,8 @@ fs.readFile(user_license_file, 'utf8', function (err, data) {
     }
     
     // write to file
-    console.log(message);
+    // console.log(message);
+    logger.info(message);
 
   });
 
