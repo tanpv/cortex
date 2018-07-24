@@ -1,6 +1,8 @@
 // define user license
-let user_license_file = 'develop.json'
-//let user_license_file = 'product.json'
+// let user_license_file = 'develop.json'
+// let user_license_file = 'product.json'
+let user_license_file = 'product_prime_1.json'
+
 
 // define logger
 const winston = require('winston');
@@ -121,12 +123,13 @@ fs.readFile(user_license_file, 'utf8', function (err, data) {
 
   // let streams = ['eeg'];
   // ['eeg','met','mot','dev','fac','com','pow', 'sys']
+  // ['eeg', 'met', 'mot', 'dev', 'fac', 'com', 'pow', 'sys']
   sub = {
     "jsonrpc": "2.0",
     "method": "subscribe",
     "params":{
       "_auth": "",
-      "streams": ['eeg', 'met', 'mot', 'dev', 'fac', 'com', 'pow', 'sys']
+      "streams": ['met']
     },
     "id":1
   }
@@ -164,17 +167,20 @@ fs.readFile(user_license_file, 'utf8', function (err, data) {
         console.log(resultObj['_auth']);
         
         // get license info
-        console.log('license info');
+        logger.info('license info');
+        logger.info(message);
         license_info.params._auth = resultObj['_auth'];
         socket.send(JSON.stringify(license_info));
 
         // create session
-        console.log('create session');
+        logger.info('create session');
+        logger.info(message);
         session.params._auth = resultObj['_auth'];
         socket.send(JSON.stringify(session));
         
         // sub data
-        console.log('sub md');
+        logger.info('start sub');
+        logger.info(message);
         sub.params._auth = resultObj['_auth'];
         socket.send(JSON.stringify(sub));
       }
