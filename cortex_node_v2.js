@@ -35,6 +35,10 @@ const logger = new (winston.Logger)({
   ]
 });
 
+// define event emitter
+const EventEmitter = require('events')
+const eem = new EventEmitter()
+
 // define websocket
 const WebSocket = require('ws');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
@@ -141,57 +145,66 @@ fs.readFile(user_license_file, 'utf8', function (err, data) {
   url = 'wss://emotivcortex.com:54321'
   var socket = new WebSocket(url);
 
+  eem.addListener('query_headset', ()=>{
+    socket.on('message', (data)=>{
+        console.log(data)
+    })
+  })
+
   socket.on('open', function open() {
 
     // send query headset
     socket.send(JSON.stringify(query_headset));
-    
-    // logout
-    socket.send(JSON.stringify(logout));
+    eem.emit('query_headset')
+
+    // // logout
+    // socket.send(JSON.stringify(logout));
   
-    // login
-    socket.send(JSON.stringify(login));
+    // // login
+    // socket.send(JSON.stringify(login));
     
-    // auth
-    socket.send(JSON.stringify(auth));
+    // // auth
+    // socket.send(JSON.stringify(auth));
   });
 
-  socket.on('message', function incoming(data) {
 
-    console.log(data)
+//   socket.on('message', function incoming(data) {
 
-    let message = JSON.parse(data);
+    // console.log(data)
 
-    if (message.hasOwnProperty('result'))
-    {
-      resultObj = message['result'];
-      if (resultObj.hasOwnProperty('_auth'))
-      {
-        console.log(resultObj['_auth']);
+    // let message = JSON.parse(data);
+
+    // if (message.hasOwnProperty('result'))
+    // {
+    //   resultObj = message['result'];
+    //   if (resultObj.hasOwnProperty('_auth'))
+    //   {
+    //     console.log(resultObj['_auth']);
         
-        // get license info
-        logger.info('license info');
-        logger.info(message);
-        license_info.params._auth = resultObj['_auth'];
-        socket.send(JSON.stringify(license_info));
+    //     // get license info
+    //     logger.info('license info');
+    //     logger.info(message);
+    //     license_info.params._auth = resultObj['_auth'];
+    //     socket.send(JSON.stringify(license_info));
 
-        // create session
-        logger.info('create session');
-        logger.info(message);
-        session.params._auth = resultObj['_auth'];
-        socket.send(JSON.stringify(session));
+    //     // create session
+    //     logger.info('create session');
+    //     logger.info(message);
+    //     session.params._auth = resultObj['_auth'];
+    //     socket.send(JSON.stringify(session));
         
-        // sub data
-        logger.info('start sub');
-        logger.info(message);
-        sub.params._auth = resultObj['_auth'];
-        socket.send(JSON.stringify(sub));
-      }
-    }
+    //     // sub data
+    //     logger.info('start sub');
+    //     logger.info(message);
+    //     sub.params._auth = resultObj['_auth'];
+    //     socket.send(JSON.stringify(sub));
+    //   }
+    // }
     
     // write to file
     // console.log(message);
-    logger.info(message);
+    // logger.info(message);
 
-  });
+//   });
+
 });
