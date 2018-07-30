@@ -120,7 +120,24 @@
 // }).then(number => {
 //     console.log(number);
 // });
+// var fetch = require("node-fetch");
+// for(let i=0; i< 5; i++){
+//     // alot of thing in javascript return a promise
+//     fetch('http://emotiv.com').then(function(response){
+//         console.log(response);
+//     })
+// }
 
+// function doubleAfter2Seconds(x){
+//     return new Promise( (resolve) => {
+//         // resolve after 2s
+//         setTimeout(() => {resolve(x*2)}, 2000);
+//     });
+// }
 
+// doubleAfter2Seconds(10).then((number) => {console.log(number)})
 
-
+// let sum = doubleAfter2Seconds(10)
+//             + doubleAfter2Seconds(20)
+//             + doubleAfter2Seconds(30);
+// console.log(sum);
