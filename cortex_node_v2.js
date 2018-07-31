@@ -1,4 +1,5 @@
 /**
+ * proof of work
  * sub data from cortext
  *  - support multiple kind of license
  *  - support sub all kind of data

@@ -6,7 +6,8 @@
  */
 
 // define user license
-let user_license_file = 'product_prime_1.json'
+// let user_license_file = 'product_prime_1.json'
+let user_license_file = 'product_commercial_1.json'
 
 // define logger
 const winston = require('winston');
